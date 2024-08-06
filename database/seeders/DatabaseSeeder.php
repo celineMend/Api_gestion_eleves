@@ -1,8 +1,11 @@
 <?php
 
 namespace Database\Seeders;
-
+use App\Models\UE;
 use App\Models\User;
+use App\Models\Eleve;
+use App\Models\Matiere;
+use App\Models\Evaluation;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -13,11 +16,13 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+        $this->call([
+            UserSeeder::class,
+            EleveSeeder::class,
+            MatiereSeeder::class,
+            UESeeder::class,
+            EvaluationSeeder::class,
         ]);
     }
 }
