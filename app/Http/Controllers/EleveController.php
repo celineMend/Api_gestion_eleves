@@ -2,65 +2,103 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\eleve;
-use App\Http\Requests\StoreeleveRequest;
-use App\Http\Requests\UpdateeleveRequest;
+use App\Http\Requests\StoreEleveRequest;
+use App\Http\Requests\UpdateEleveRequest;
+use App\Models\Eleve;
+use Illuminate\Http\Response;
 
 class EleveController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Afficher une liste des ressources.
      */
     public function index()
     {
-        //
+        $eleves = Eleve::all();
+        return response()->json($eleves);
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Stocker une nouvelle ressource.
      */
-    public function create()
+    public function store(StoreEleveRequest $request)
     {
-        //
+        $eleve = Eleve::create($request->validated());
+        return response()->json($eleve, Response::HTTP_CREATED);
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Afficher une ressource spécifique.
      */
-    public function store(StoreeleveRequest $request)
+    public function show(Eleve $eleve)
     {
-        //
+        return response()->json($eleve);
     }
 
     /**
-     * Display the specified resource.
+     * Mettre à jour une ressource spécifique.
      */
-    public function show(eleve $eleve)
+    public function update(UpdateEleveRequest $request, Eleve $eleve)
     {
-        //
+        $eleve->update($request->validated());
+        return response()->json($eleve);
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Supprimer une ressource spécifique.
      */
-    public function edit(eleve $eleve)
+    public function destroy(Eleve $eleve)
     {
-        //
+        $eleve->delete();
+        return response()->json(null, Response::HTTP_NO_CONTENT);
     }
 
     /**
-     * Update the specified resource in storage.
+     * Restaurer une ressource supprimée.
      */
-    public function update(UpdateeleveRequest $request, eleve $eleve)
+    public function restore($id)
     {
-        //
+        $eleve = Eleve::onlyTrashed()->where('id', $id)->first();
+        if ($eleve) {
+            $eleve->restore();
+            return response()->json([
+                'message' => 'Eleve restauré avec succès',
+                'eleve' => $eleve,
+            ]);
+        } else {
+            return response()->json([
+                'message' => 'Eleve non trouvé ou déjà restauré',
+            ], Response::HTTP_NOT_FOUND);
+        }
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Supprimer définitivement une ressource.
      */
-    public function destroy(eleve $eleve)
+    public function forceDelete($id)
     {
-        //
+        $eleve = Eleve::onlyTrashed()->where('id', $id)->first();
+        if ($eleve) {
+            $eleve->forceDelete();
+            return response()->json([
+                'message' => 'Eleve supprimé définitivement',
+            ]);
+        } else {
+            return response()->json([
+                'message' => 'Eleve non trouvé ou déjà supprimé définitivement',
+            ], Response::HTTP_NOT_FOUND);
+        }
+    }
+
+    /**
+     * Afficher les ressources supprimées.
+     */
+    public function trashed()
+    {
+        $eleves = Eleve::onlyTrashed()->get();
+        return response()->json([
+            'message' => 'Eleves archivés',
+            'eleves' => $eleves,
+        ]);
     }
 }
