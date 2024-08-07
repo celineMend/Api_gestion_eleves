@@ -12,7 +12,7 @@ class StoreevaluationRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -26,15 +26,16 @@ class StoreevaluationRequest extends FormRequest
             'eleve_id' => ['required', 'exists:eleves,id'],
             'matiere_id' => ['required', 'exists:matieres,id'],
             'note' => ['required', 'numeric', 'min:0', 'max:20'],
+            'ue_id'=>['nullable'],
             'date' => ['required' ,'date'],
             'commentaire' => ['nullable', 'string', 'max:255'],
         ];
     }
 
-    // public function failedValidation(Validator $validator)
-    // {
-    //     throw new HttpResponseException(response()->json(
-    //         ['success' => false, 'errors' => $validator->errors()], 422
-    //     ));
-    // }
+    public function failedValidation(Validator $validator)
+    {
+        throw new HttpResponseException(response()->json(
+            ['success' => false, 'errors' => $validator->errors()], 422
+        ));
+    }
 }

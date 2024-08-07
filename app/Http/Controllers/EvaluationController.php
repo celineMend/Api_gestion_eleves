@@ -67,6 +67,6 @@ class EvaluationController extends Controller
     {
         // Supprimer l'évaluation
         $evaluation->delete();
-        return response()->json(['message' => 'Évaluation supprimée avec succès']);
+        return response()->json(['message' => 'Évaluation supprimée avec succès'],200);
     }
 }

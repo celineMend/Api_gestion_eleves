@@ -19,12 +19,13 @@ class EvaluationFactory extends Factory
      */
     public function definition(): array
     {
-        return [
-            'note' => $this->faker->numberBetween(0, 20),
-            'date' => $this->faker->date(),
-            'eleve_id' => Eleve::factory(), // Génère un ID pour 'eleve_id'
-            'ue_id' => Ue::factory(),
-            'matiere_id' => Matiere::factory(),
-        ];
+        //
+        // return [
+        //     'note' => $this->faker->numberBetween(0, 20),
+        //     'date' => $this->faker->date(),
+        //     'eleve_id' => Eleve::factory(), // Génère un ID pour 'eleve_id'
+        //     'ue_id' => Ue::factory(),
+        //     'matiere_id' => Matiere::factory(),
+        // ];
     }
 }

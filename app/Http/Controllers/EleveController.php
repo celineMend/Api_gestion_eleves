@@ -54,7 +54,7 @@ class EleveController extends Controller
     {
         $eleve = Eleve::findOrFail($id);
         $eleve->delete();
-        return self::customJsonResponse('Élève supprimé avec succès', null, 204);
+        return self::customJsonResponse('Élève supprimé avec succès', null, 200);
     }
 
     /**

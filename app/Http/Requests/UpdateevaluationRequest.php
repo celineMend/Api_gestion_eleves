@@ -10,10 +10,7 @@ class UpdateevaluationRequest extends FormRequest
     /**
      * Determine if the user is authorized to make this request.
      */
-    public function authorize(): bool
-    {
-        return false;
-    }
+   
 
     /**
      * Get the validation rules that apply to the request.
@@ -23,17 +20,18 @@ class UpdateevaluationRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'eleve_id' => ['required', 'exists:eleves,id'],
+            'eleve_id' => ['nullable', 'exists:eleves,id'],
             'matiere_id' => ['required', 'exists:matieres,id'],
+            'ue_id'=>['nullable'],
             'note' => ['required', 'numeric', 'min:0', 'max:20'],
             'commentaire' => ['nullable', 'string', 'max:255'],
         ];
     }
 
-    // public function failedValidation(Validator $validator)
-    // {
-    //     throw new HttpResponseException(response()->json(
-    //         ['success' => false, 'errors' => $validator->errors()], 422
-    //     ));
-    // }
+    public function failedValidation(Validator $validator)
+    {
+        throw new HttpResponseException(response()->json(
+            ['success' => false, 'errors' => $validator->errors()], 422
+        ));
+    }
 }
