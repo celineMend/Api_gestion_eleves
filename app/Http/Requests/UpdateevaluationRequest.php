@@ -1,8 +1,9 @@
 <?php
 
 namespace App\Http\Requests;
-
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class UpdateevaluationRequest extends FormRequest
 {
@@ -22,16 +23,17 @@ class UpdateevaluationRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'valeur' => 'sometimes|numeric|min:0|max:20',
-            'date' => 'sometimes|date',
-            'matiere_id' => 'sometimes|exists:matieres,id',
+            'eleve_id' => ['required', 'exists:eleves,id'],
+            'matiere_id' => ['required', 'exists:matieres,id'],
+            'note' => ['required', 'numeric', 'min:0', 'max:20'],
+            'commentaire' => ['nullable', 'string', 'max:255'],
         ];
     }
-    public function failedValidation(Validator $validator)
-    {
-        throw new HttpResponseException(response()->json([
-            'success'   => false,
-            'errors'      => $validator->errors()
-        ], 422));
-    }
+
+    // public function failedValidation(Validator $validator)
+    // {
+    //     throw new HttpResponseException(response()->json(
+    //         ['success' => false, 'errors' => $validator->errors()], 422
+    //     ));
+    // }
 }

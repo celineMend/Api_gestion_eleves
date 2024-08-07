@@ -1,8 +1,9 @@
 <?php
 
 namespace App\Http\Requests;
-
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class StoreevaluationRequest extends FormRequest
 {
@@ -22,16 +23,18 @@ class StoreevaluationRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'note' => 'required|numeric|min:0|max:20',
-            'date' => 'required|date',
-            'matiere_id' => 'required|exists:matieres,id'
+            'eleve_id' => ['required', 'exists:eleves,id'],
+            'matiere_id' => ['required', 'exists:matieres,id'],
+            'note' => ['required', 'numeric', 'min:0', 'max:20'],
+            'date' => ['required' ,'date'],
+            'commentaire' => ['nullable', 'string', 'max:255'],
         ];
     }
-    public function failedValidation(Validator $validator)
-    {
-        throw new HttpResponseException(response()->json([
-            'success'   => false,
-            'errors'      => $validator->errors()
-        ], 422));
-    }
+
+    // public function failedValidation(Validator $validator)
+    // {
+    //     throw new HttpResponseException(response()->json(
+    //         ['success' => false, 'errors' => $validator->errors()], 422
+    //     ));
+    // }
 }

@@ -26,8 +26,10 @@ Route::get('eleves/trashed', [EleveController::class, 'trashed']);
 
 // Evaluation Routes
 Route::get('evaluations', [EvaluationController::class, 'index']);
-Route::post('add/evaluation/{etudiantId}', [EvaluationController::class, 'store']);
-Route::get('detail/evaluation/{evaluation}', [EvaluationController::class, 'show']);
+Route::post('add/evaluation', [EvaluationController::class, 'store']);
+Route::get('detail/evaluation/{id}', [EvaluationController::class, 'show']);
 Route::put('update/evaluation/{id}', [EvaluationController::class, 'update']);
-Route::delete('delete/evaluation/{evaluation}', [EvaluationController::class, 'destroy']);
-
+Route::delete('delete/evaluation/{id}', [EvaluationController::class, 'destroy']);
+Route::post('evaluations/restore/{id}', [EvaluationController::class, 'restore']);
+Route::delete('evaluations/force-delete/{id}', [EvaluationController::class, 'forceDelete']);
+Route::get('evaluations/trashed', [EvaluationController::class, 'trashed']);
