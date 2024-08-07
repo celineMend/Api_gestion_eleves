@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreEleveRequest;
-use App\Http\Requests\UpdateEleveRequest;
 use App\Models\Eleve;
 use Illuminate\Http\Response;
+use App\Http\Requests\StoreEleveRequest;
+use App\Http\Requests\UpdateEleveRequest;
 
 class EleveController extends Controller
 {
@@ -23,8 +23,10 @@ class EleveController extends Controller
      */
     public function store(StoreEleveRequest $request)
     {
-        $eleve = Eleve::create($request->validated());
-        return response()->json($eleve, Response::HTTP_CREATED);
+        $eleve = new Eleve();
+        $eleve->fill($request->validated());
+        $eleve->save();
+        return self::customJsonResponse("Élève créé avec succès", $eleve, 201);
     }
 
     /**
@@ -38,19 +40,21 @@ class EleveController extends Controller
     /**
      * Mettre à jour une ressource spécifique.
      */
-    public function update(UpdateEleveRequest $request, Eleve $eleve)
+    public function update(UpdateEleveRequest $request, $id)
     {
+        $eleve = Eleve::findOrFail($id);
         $eleve->update($request->validated());
-        return response()->json($eleve);
+        return self::customJsonResponse('Élève mis à jour avec succès', $eleve, 200);
     }
 
     /**
      * Supprimer une ressource spécifique.
      */
-    public function destroy(Eleve $eleve)
+    public function destroy($id)
     {
+        $eleve = Eleve::findOrFail($id);
         $eleve->delete();
-        return response()->json(null, Response::HTTP_NO_CONTENT);
+        return self::customJsonResponse('Élève supprimé avec succès', null, 204);
     }
 
     /**
@@ -61,13 +65,10 @@ class EleveController extends Controller
         $eleve = Eleve::onlyTrashed()->where('id', $id)->first();
         if ($eleve) {
             $eleve->restore();
-            return response()->json([
-                'message' => 'Eleve restauré avec succès',
-                'eleve' => $eleve,
-            ]);
+            return self::customJsonResponse('Élève restauré avec succès', $eleve, 200);
         } else {
             return response()->json([
-                'message' => 'Eleve non trouvé ou déjà restauré',
+                'message' => 'Élève non trouvé ou déjà restauré',
             ], Response::HTTP_NOT_FOUND);
         }
     }
@@ -80,12 +81,10 @@ class EleveController extends Controller
         $eleve = Eleve::onlyTrashed()->where('id', $id)->first();
         if ($eleve) {
             $eleve->forceDelete();
-            return response()->json([
-                'message' => 'Eleve supprimé définitivement',
-            ]);
+            return self::customJsonResponse('Élève supprimé définitivement', null, 200);
         } else {
             return response()->json([
-                'message' => 'Eleve non trouvé ou déjà supprimé définitivement',
+                'message' => 'Élève non trouvé ou déjà supprimé définitivement',
             ], Response::HTTP_NOT_FOUND);
         }
     }
@@ -96,9 +95,6 @@ class EleveController extends Controller
     public function trashed()
     {
         $eleves = Eleve::onlyTrashed()->get();
-        return response()->json([
-            'message' => 'Eleves archivés',
-            'eleves' => $eleves,
-        ]);
+        return self::customJsonResponse('Élèves archivés', $eleves, 200);
     }
 }

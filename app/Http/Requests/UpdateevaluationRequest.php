@@ -22,7 +22,16 @@ class UpdateevaluationRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'valeur' => 'sometimes|numeric|min:0|max:20',
+            'date' => 'sometimes|date',
+            'matiere_id' => 'sometimes|exists:matieres,id',
         ];
+    }
+    public function failedValidation(Validator $validator)
+    {
+        throw new HttpResponseException(response()->json([
+            'success'   => false,
+            'errors'      => $validator->errors()
+        ], 422));
     }
 }

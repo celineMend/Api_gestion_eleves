@@ -2,65 +2,82 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\evaluation;
-use App\Http\Requests\StoreevaluationRequest;
-use App\Http\Requests\UpdateevaluationRequest;
+use App\Models\Eleve;
+use App\Models\Evaluation;
+use App\Http\Requests\StoreEvaluationRequest;
+use App\Http\Requests\UpdateEvaluationRequest;
 
 class EvaluationController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Afficher une liste des ressources.
      */
     public function index()
     {
-        //
+        // Récupérer tous les élèves avec leurs évaluations et les matières
+        $eleves = Eleve::with('evaluations.matiere')->get();
+
+        // Retourner les données en format JSON
+        return response()->json($eleves);
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Stocker une nouvelle ressource.
      */
-    public function create()
+    public function store(StoreEvaluationRequest $request, $eleveId)
     {
-        //
+        // Récupérer l'élève par son ID
+        $eleve = Eleve::findOrFail($eleveId);
+
+        // Créer une nouvelle évaluation avec les données validées et l'associer à l'élève
+        $evaluation = new Evaluation($request->validated());
+        $evaluation->eleve_id = $eleve->id;
+        $evaluation->save();
+
+        // Retourner une réponse JSON avec succès
+        return response()->json([
+            'message' => 'Évaluation ajoutée avec succès',
+            'evaluation' => $evaluation
+        ], 201);
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Afficher une ressource spécifique.
      */
-    public function store(StoreevaluationRequest $request)
+    public function show(Evaluation $evaluation)
     {
-        //
+        // Récupérer l'élève avec ses évaluations et les matières
+        $eleve = Eleve::with('evaluations.matiere')->findOrFail($evaluation->eleve_id);
+
+        // Retourner les données en format JSON
+        return response()->json($eleve);
     }
 
     /**
-     * Display the specified resource.
+     * Mettre à jour une ressource spécifique.
      */
-    public function show(evaluation $evaluation)
+    public function update(UpdateEvaluationRequest $request, $id)
     {
-        //
+        // Récupérer l'évaluation par son ID
+        $evaluation = Evaluation::findOrFail($id);
+
+        // Mettre à jour l'évaluation avec les données validées
+        $evaluation->update($request->validated());
+
+        // Retourner une réponse JSON avec succès
+        return response()->json([
+            'message' => 'Évaluation mise à jour avec succès',
+            'evaluation' => $evaluation
+        ], 200);
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Supprimer une ressource spécifique.
      */
-    public function edit(evaluation $evaluation)
+    public function destroy(Evaluation $evaluation)
     {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(UpdateevaluationRequest $request, evaluation $evaluation)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(evaluation $evaluation)
-    {
-        //
+        // Supprimer l'évaluation
+        $evaluation->delete();
+        return response()->json(['message' => 'Évaluation supprimée avec succès']);
     }
 }

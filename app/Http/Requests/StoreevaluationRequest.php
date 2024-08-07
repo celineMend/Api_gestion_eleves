@@ -22,7 +22,16 @@ class StoreevaluationRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'note' => 'required|numeric|min:0|max:20',
+            'date' => 'required|date',
+            'matiere_id' => 'required|exists:matieres,id'
         ];
+    }
+    public function failedValidation(Validator $validator)
+    {
+        throw new HttpResponseException(response()->json([
+            'success'   => false,
+            'errors'      => $validator->errors()
+        ], 422));
     }
 }
