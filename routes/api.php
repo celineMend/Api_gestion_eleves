@@ -19,7 +19,7 @@ Route::get('eleves', [EleveController::class, 'index']);
 Route::post('add/eleve', [EleveController::class, 'store']);
 Route::get('detail/eleve/{eleve}', [EleveController::class, 'show']);
 Route::put('update/eleve/{eleve}', [EleveController::class, 'update']);
-Route::delete('delete/eleve/{eleve}', [EleveController::class, 'destroy']);
+Route::delete('eleves/{id}', [EleveController::class, 'destroy']);
 Route::post('eleves/restore/{id}', [EleveController::class, 'restore']);
 Route::delete('eleves/force-delete/{id}', [EleveController::class, 'forceDelete']);
 Route::get('eleves/trashed', [EleveController::class, 'trashed']);

@@ -51,11 +51,21 @@ class EleveController extends Controller
      * Supprimer une ressource spécifique.
      */
     public function destroy($id)
-    {
-        $eleve = Eleve::findOrFail($id);
-        $eleve->delete();
-        return self::customJsonResponse('Élève supprimé avec succès', null, 200);
+{
+    \Log::info('ID reçu pour la suppression : ' . $id);
+
+    $eleve = Eleve::find($id);
+    if (!$eleve) {
+        return response()->json([
+            'message' => 'Élève non trouvé',
+        ], Response::HTTP_NOT_FOUND);
     }
+
+    $eleve->delete();
+    \Log::info('Élève supprimé avec succès : ' . $id);
+    return self::customJsonResponse('Élève supprimé avec succès', null, 204);
+}
+
 
     /**
      * Restaurer une ressource supprimée.
